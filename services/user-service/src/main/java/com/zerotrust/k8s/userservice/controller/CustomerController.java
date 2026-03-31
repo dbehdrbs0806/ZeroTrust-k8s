@@ -1,8 +1,13 @@
 package com.zerotrust.k8s.userservice.controller;
 
 
+import com.zerotrust.k8s.userservice.dto.CustomerCreateRequestDto;
+import com.zerotrust.k8s.userservice.dto.CustomerResponseDto;
+import com.zerotrust.k8s.userservice.dto.CustomerUpdateRequestDto;
+import com.zerotrust.k8s.userservice.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,23 +23,23 @@ public class CustomerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerResponse create(@Valid @RequestBody CustomerCreateRequest request) {
+    public CustomerResponseDto create(@Valid @RequestBody CustomerCreateRequestDto request) {
         return customerService.create(request);
     }
 
     @GetMapping
-    public List<CustomerResponse> findAll() {
+    public List<CustomerResponseDto> findAll() {
         return customerService.findAll();
     }
 
     @GetMapping("/{id}")
-    public CustomerResponse findById(@PathVariable String id) {
+    public CustomerResponseDto findById(@PathVariable String id) {
         return customerService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public CustomerResponse update(@PathVariable String id,
-                                   @Valid @RequestBody CustomerUpdateRequest request) {
+    public CustomerResponseDto update(@PathVariable String id,
+                                   @Valid @RequestBody CustomerUpdateRequestDto request) {
         return customerService.update(id, request);
     }
 

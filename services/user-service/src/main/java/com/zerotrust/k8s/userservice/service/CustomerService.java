@@ -1,17 +1,25 @@
 package com.zerotrust.k8s.userservice.service;
 
 
+import com.zerotrust.k8s.userservice.domain.Customer;
+import com.zerotrust.k8s.userservice.dto.CustomerCreateRequestDto;
+import com.zerotrust.k8s.userservice.dto.CustomerResponseDto;
+import com.zerotrust.k8s.userservice.dto.CustomerUpdateRequestDto;
 import com.zerotrust.k8s.userservice.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CustomService {
+public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
     // Customer Create 생성 함수
-    public CustomerResponse create(CustomerCreateRequest request) {
+    public CustomerResponseDto create(CustomerCreateRequestDto request) {
         Customer customer = Customer.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -23,7 +31,7 @@ public class CustomService {
         return toResponse(saved);
     }
     // findAll() Custom 전체 출력
-    public List<CustomerResponse> findAll() {
+    public List<CustomerResponseDto> findAll() {
         return customerRepository.findAll()
                 .stream()
                 .map(this::toResponse)
@@ -31,7 +39,7 @@ public class CustomService {
     }
 
     // findById() Id 기반해서 find() 찾는 함수
-    public CustomerResponse findById(String id) {
+    public CustomerResponseDto findById(String id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 고객이 존재하지 않습니다. id=" + id));
 
@@ -39,7 +47,7 @@ public class CustomService {
     }
 
     //
-    public CustomerResponse update(String id, CustomerUpdateRequest request) {
+    public CustomerResponseDto update(String id, CustomerUpdateRequestDto request) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 고객이 존재하지 않습니다. id=" + id));
 
@@ -58,8 +66,8 @@ public class CustomService {
         customerRepository.delete(customer);
     }
 
-    private CustomerResponse toResponse(Customer customer) {
-        return CustomerResponse.builder()
+    private CustomerResponseDto toResponse(Customer customer) {
+        return CustomerResponseDto.builder()
                 .id(customer.getId())
                 .name(customer.getName())
                 .email(customer.getEmail())
