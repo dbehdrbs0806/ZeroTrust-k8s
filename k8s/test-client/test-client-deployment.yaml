@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-client
+  namespace: zerotrust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-client
+  template:
+    metadata:
+      labels:
+        app: test-client
+    spec:
+      containers:
+        - name: test-client
+          image: a67422830/test-client:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: USER_SERVICE_URL
+              value: http://user-service:8080
+            - name: EVENT_SERVICE_URL
+              value: http://event-service:8080
