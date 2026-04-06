@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: zerotrust
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+      
+    # zerotrust 에서 모든 Pod가 kube-system(네임스페이스) 의 DNS 53 port로 통신
+    # 즉 default-deny-all.yaml 적용 이후 DNS 통신이 막히는 문제 해결을 위한 정책

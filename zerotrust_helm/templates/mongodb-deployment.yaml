@@ -1,40 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb
-  namespace: zerotrust
+  name: {{ .Values.mongodb.name }}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: {{ .Values.mongodb.name }}
   template:
     metadata:
       labels:
-        app: mongodb
+        app: {{ .Values.mongodb.name }}
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k8s-worker1
-      
-      serviceAccountName: mongodb-sa
-      automountServiceAccountToken: false
-
+      serviceAccountName: {{ .Values.mongodb.serviceAccountName }}
       containers:
-        - name: mongodb
-          image: mongo:8.0
+        - name: {{ .Values.mongodb.name }}
+          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
+          imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
           ports:
-            - containerPort: 27017
+            - containerPort: {{ .Values.mongodb.service.port }}
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: MONGO_INITDB_ROOT_USERNAME
+                  key: username
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: MONGO_INITDB_ROOT_PASSWORD
+                  key: password
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data/db

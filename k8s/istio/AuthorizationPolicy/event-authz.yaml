@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-test-client-to-event-service
+  namespace: zerotrust
+spec:
+  selector:
+    matchLabels:
+      app: event-service
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/zerotrust/sa/test-client-sa"

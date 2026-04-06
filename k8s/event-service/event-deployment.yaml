@@ -13,6 +13,10 @@ spec:
       labels:
         app: event-service
     spec:
+    
+      serviceAccountName: event-service-sa
+      automountServiceAccountToken: false
+
       containers:
         - name: event-service
           image: a67422830/event-service:v1
@@ -21,4 +25,7 @@ spec:
             - containerPort: 8080
           env:
             - name: MONGODB_URI
-              value: mongodb://mongodb:27017/zerotrust_database
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_URI

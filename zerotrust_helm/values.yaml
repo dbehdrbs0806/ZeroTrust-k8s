@@ -1,0 +1,52 @@
+namespace: zerotrust
+
+userService:
+  name: user-service
+  replicaCount: 1
+  image:
+    repository: a67422830/user-service
+    tag: v1
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  serviceAccountName: user-service-sa
+
+eventService:
+  name: event-service
+  replicaCount: 1
+  image:
+    repository: a67422830/event-service
+    tag: v1
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  serviceAccountName: event-service-sa
+
+testClient:
+  name: test-client
+  replicaCount: 1
+  image:
+    repository: a67422830/test-client
+    tag: v1
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  serviceAccountName: test-client-sa
+
+mongodb:
+  name: mongodb
+  image:
+    repository: mongo
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  service:
+    port: 27017
+  serviceAccountName: mongodb-sa
+  pvc:
+    size: 1Gi
+  auth:
+    username: root
+    password: root
+
+istio:
+  inject: "enabled"

@@ -13,6 +13,10 @@ spec:
       labels:
         app: user-service
     spec:
+
+      serviceAccountName: user-service-sa         # user-service-sa ServiceAccount 사용
+      automountServiceAccountToken: false         # Pod 안에서 K8s API Server 통신 마운트를 false 비활성화
+      
       containers:
         - name: user-service
           image: a67422830/user-service:v1
@@ -20,5 +24,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: MONGODB_URI
-              value: mongodb://mongodb:27017/zerotrust_database
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_URI
