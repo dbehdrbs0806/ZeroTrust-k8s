@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: zerotrust
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress       # Ingress Pod로 들어오는 요청 제어
+    - Egress        # Egress Pod에서 나가는 요청 제어 
+                    # 들어오는 것과 나가는 것에 모든 정책 대상으로 지정
+                    # Ingress/Egress 허용 규칙이 없기 때문에 deny
+                    # 기본적인 Deny ALL 정책. Apply 이후 Pod 간 통신이 막힘
+                    # DNS 통신 막힘 -> allow-dns-egress.yaml 적용 필요

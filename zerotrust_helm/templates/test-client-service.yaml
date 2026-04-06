@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.testClient.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.testClient.name }}
+  ports:
+    - port: {{ .Values.testClient.service.port }}
+      targetPort: {{ .Values.testClient.service.port }}
+  type: ClusterIP

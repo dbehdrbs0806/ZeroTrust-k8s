@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.eventService.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.eventService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.eventService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.eventService.name }}
+    spec:
+      serviceAccountName: {{ .Values.eventService.serviceAccountName }}
+      containers:
+        - name: {{ .Values.eventService.name }}
+          image: "{{ .Values.eventService.image.repository }}:{{ .Values.eventService.image.tag }}"
+          imagePullPolicy: {{ .Values.eventService.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.eventService.service.port }}

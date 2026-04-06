@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-testclient-egress-to-userservice
+  namespace: zerotrust
+spec:
+  podSelector:
+    matchLabels:
+      app: test-client
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: user-service
+      ports:
+        - protocol: TCP
+          port: 8080
+# spec: podSelector: matchLabels: app: test-client
+# Egress 이기에 test-client 라벨의 Pod 에서 (출발)
+# to: podSelector: matchLabels: app: user-service
+# user-service 라벨의 Pod 로 나가는 트래픽 허용 (대상)

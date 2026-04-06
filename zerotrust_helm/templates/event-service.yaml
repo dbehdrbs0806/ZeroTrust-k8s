@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.eventService.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.eventService.name }}
+  ports:
+    - port: {{ .Values.eventService.service.port }}
+      targetPort: {{ .Values.eventService.service.port }}
+  type: ClusterIP

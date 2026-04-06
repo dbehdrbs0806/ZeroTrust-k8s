@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-userservice-to-mongodb
+  namespace: zerotrust
+spec:
+  podSelector:
+    matchLabels:
+      app: mongodb
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: user-service
+      ports:
+        - protocol: TCP
+          port: 27017
+# mongodb 라벨 Pod 가 대상
+# user-service 라벨의 Pod 에서 나가는 트래픽 허용

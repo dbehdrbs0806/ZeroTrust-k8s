@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cnp-testclient-to-userservice
+  namespace: zerotrust
+spec:
+  endpointSelector:
+    matchLabels:
+      app: test-client
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: user-service
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

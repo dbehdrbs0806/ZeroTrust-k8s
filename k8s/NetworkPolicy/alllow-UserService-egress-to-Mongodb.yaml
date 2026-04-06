@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-userservice-egress-to-mongodb
+  namespace: zerotrust
+spec:
+  podSelector:
+    matchLabels:
+      app: user-service
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mongodb
+      ports:
+        - protocol: TCP
+          port: 27017
+          
+# spec: podSelector: matchLabels: app: user-service
+# Egress 이기에 user-service 라벨의 Pod 에서 (출발)
+# to: podSelector: matchLabels: app: mongodb
+# mongodb 라벨의 Pod 로 나가는 트래픽 허용 (대상)

@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-client-read-binding
+  namespace: zerotrust
+subjects:           # Bind이 연결되는 ServiceAccount 주체 정의
+  - kind: ServiceAccount
+    name: test-client-sa
+    namespace: zerotrust
+roleRef:            # Role 권한 Binding 정의
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: test-client-read-role

@@ -13,6 +13,10 @@ spec:
       labels:
         app: test-client
     spec:
+
+      serviceAccountName: test-client-sa
+      automountServiceAccountToken: false
+      
       containers:
         - name: test-client
           image: a67422830/test-client:v1
