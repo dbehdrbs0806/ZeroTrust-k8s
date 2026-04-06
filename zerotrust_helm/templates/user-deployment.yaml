@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.userService.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.userService.replicaCount }}
   selector:
@@ -14,9 +14,16 @@ spec:
         app: {{ .Values.userService.name }}
     spec:
       serviceAccountName: {{ .Values.userService.serviceAccountName }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Values.userService.name }}
           image: "{{ .Values.userService.image.repository }}:{{ .Values.userService.image.tag }}"
           imagePullPolicy: {{ .Values.userService.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.userService.service.port }}
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_URI

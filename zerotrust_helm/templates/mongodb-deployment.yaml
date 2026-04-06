@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.mongodb.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.mongodb.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.mongodb.name }}
@@ -13,7 +13,10 @@ spec:
       labels:
         app: {{ .Values.mongodb.name }}
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.mongodb.storage.nodeName }}
       serviceAccountName: {{ .Values.mongodb.serviceAccountName }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Values.mongodb.name }}
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
@@ -25,12 +28,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: username
+                  key: MONGO_INITDB_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
-                  key: password
+                  key: MONGO_INITDB_ROOT_PASSWORD
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data/db

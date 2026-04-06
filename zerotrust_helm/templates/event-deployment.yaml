@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.eventService.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.eventService.replicaCount }}
   selector:
@@ -14,9 +14,16 @@ spec:
         app: {{ .Values.eventService.name }}
     spec:
       serviceAccountName: {{ .Values.eventService.serviceAccountName }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Values.eventService.name }}
           image: "{{ .Values.eventService.image.repository }}:{{ .Values.eventService.image.tag }}"
           imagePullPolicy: {{ .Values.eventService.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.eventService.service.port }}
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_URI

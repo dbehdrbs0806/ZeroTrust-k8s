@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cnp-testclient-to-userservice
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.testClient.name }}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: {{ .Values.userService.name }}
+      toPorts:
+        - ports:
+            - port: "{{ .Values.userService.service.port }}"
+              protocol: TCP

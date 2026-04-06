@@ -1,4 +1,6 @@
-namespace: zerotrust
+
+istio:
+  inject: "enabled"
 
 userService:
   name: user-service
@@ -6,10 +8,12 @@ userService:
   image:
     repository: a67422830/user-service
     tag: v1
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     port: 8080
   serviceAccountName: user-service-sa
+  env:
+    mongodbUri: "mongodb://root:root@mongodb:27017/zerotrust_database?authSource=admin"
 
 eventService:
   name: event-service
@@ -17,10 +21,12 @@ eventService:
   image:
     repository: a67422830/event-service
     tag: v1
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     port: 8080
   serviceAccountName: event-service-sa
+  env:
+    mongodbUri: "mongodb://root:root@mongodb:27017/zerotrust_database?authSource=admin"
 
 testClient:
   name: test-client
@@ -28,13 +34,17 @@ testClient:
   image:
     repository: a67422830/test-client
     tag: v1
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     port: 8080
   serviceAccountName: test-client-sa
+  env:
+    userServiceUrl: "http://user-service:8080"
+    eventServiceUrl: "http://event-service:8080"
 
 mongodb:
   name: mongodb
+  replicaCount: 1
   image:
     repository: mongo
     tag: "8.0"
@@ -42,11 +52,12 @@ mongodb:
   service:
     port: 27017
   serviceAccountName: mongodb-sa
-  pvc:
-    size: 1Gi
   auth:
-    username: root
-    password: root
-
-istio:
-  inject: "enabled"
+    rootUsername: root
+    rootPassword: root
+    uri: "mongodb://root:root@mongodb:27017/zerotrust_database?authSource=admin"
+  storage:
+    size: 5Gi
+    storageClassName: manual
+    hostPath: /data/mongodb-helm
+    nodeName: k8s-worker1

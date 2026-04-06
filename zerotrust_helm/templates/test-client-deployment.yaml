@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.testClient.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.testClient.replicaCount }}
   selector:
@@ -14,9 +14,15 @@ spec:
         app: {{ .Values.testClient.name }}
     spec:
       serviceAccountName: {{ .Values.testClient.serviceAccountName }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Values.testClient.name }}
           image: "{{ .Values.testClient.image.repository }}:{{ .Values.testClient.image.tag }}"
           imagePullPolicy: {{ .Values.testClient.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.testClient.service.port }}
+          env:
+            - name: USER_SERVICE_URL
+              value: {{ .Values.testClient.env.userServiceUrl | quote }}
+            - name: EVENT_SERVICE_URL
+              value: {{ .Values.testClient.env.eventServiceUrl | quote }}
