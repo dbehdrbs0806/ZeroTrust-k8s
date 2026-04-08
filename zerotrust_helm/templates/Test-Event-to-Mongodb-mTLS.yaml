@@ -26,3 +26,5 @@ spec:
     - source:
         serviceAccounts:
         - "zerotrust-helm/user-service-sa"
+
+---
