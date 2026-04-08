@@ -1,0 +1,28 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: mongodb-strict
+  namespace: zerotrust-helm
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  mtls:
+    mode: STRICT
+    
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: mongodb-allow-user-only
+  namespace: zerotrust-helm
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        serviceAccounts:
+        - "zerotrust-helm/user-service-sa"
