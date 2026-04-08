@@ -27,4 +27,3 @@ spec:
         serviceAccounts:
         - "zerotrust-helm/user-service-sa"
 
----
